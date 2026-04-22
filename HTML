@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UMD Career Fair — Employers by Industry</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #E21833;
+    --gold: #C9A000;
+    --black: #2B2620;
+    --white: #1C1612;
+    --gray: #7A6F63;
+    --bg: #F2EDE4;
+    --card-bg: #EDE7DC;
+    --border: rgba(44,38,32,0.12);
+  }
+ 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Source Serif 4', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+ 
+  header {
+    position: relative;
+    padding: 60px 48px 40px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+ 
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(226,24,51,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+ 
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+ 
+  h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+ 
+  h1 em { font-style: italic; color: var(--red); }
+ 
+  .header-sub {
+    font-size: 14px;
+    color: var(--gray);
+    font-weight: 300;
+    margin-top: 14px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+ 
+  .stats-row { display: flex; gap: 32px; margin-top: 32px; flex-wrap: wrap; }
+  .stat { display: flex; flex-direction: column; gap: 4px; }
+ 
+  .stat-num {
+    font-family: 'Source Serif 4', serif;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--gold);
+  }
+ 
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    font-family: 'DM Mono', monospace;
+  }
+ 
+  .controls {
+    padding: 20px 48px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: #F2EDE4;
+    z-index: 100;
+    transition: box-shadow 0.2s;
+  }
+ 
+  .controls.scrolled { box-shadow: 0 2px 12px rgba(44,38,32,0.1); }
+ 
+  .search-wrap { position: relative; flex: 1; min-width: 220px; max-width: 400px; }
+ 
+  .search-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+    font-size: 14px;
+    pointer-events: none;
+  }
+ 
+  input[type="search"] {
+    width: 100%;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--white);
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    padding: 10px 16px 10px 40px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+ 
+  input[type="search"]:focus { border-color: var(--gold); background: rgba(255,255,255,0.9); }
+  input[type="search"]::placeholder { color: var(--gray); }
+ 
+  .view-toggle {
+    display: flex; gap: 4px;
+    background: rgba(0,0,0,0.07);
+    border-radius: 6px; padding: 4px;
+  }
+ 
+  .view-btn {
+    background: none; border: none; color: var(--gray);
+    padding: 6px 10px; border-radius: 4px;
+    cursor: pointer; font-size: 14px; transition: all 0.2s;
+  }
+ 
+  .view-btn.active { background: var(--red); color: white; }
+ 
+  .count-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--gray);
+    white-space: nowrap; margin-left: auto;
+  }
+ 
+  .count-badge span { color: var(--gold); font-weight: 500; }
+ 
+  .filters {
+    padding: 16px 48px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+  }
+ 
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    padding: 6px 14px; border-radius: 100px;
+    border: 1px solid rgba(44,38,32,0.2);
+    cursor: pointer; transition: all 0.2s;
+    white-space: nowrap; color: var(--gray);
+    background: none; text-transform: uppercase;
+  }
+ 
+  .pill:hover { border-color: var(--black); color: var(--black); }
+  .pill.active { background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 500; }
+ 
+  main { padding: 40px 48px 80px; }
+ 
+  .industry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2px;
+  }
+ 
+  .industry-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 28px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease both;
+  }
+ 
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  .industry-card:hover {
+    border-color: rgba(201,160,0,0.4);
+    background: #E8E1D5;
+    transform: translateY(-2px);
+    z-index: 1;
+  }
+ 
+  .industry-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0; height: 3px;
+    background: var(--accent-color, var(--red));
+    transition: width 0.35s ease;
+  }
+ 
+  .industry-card:hover::before { width: 100%; }
+ 
+  .card-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 20px; gap: 12px;
+  }
+ 
+  .card-icon { font-size: 22px; line-height: 1; }
+ 
+  .card-count {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--gray); background: rgba(44,38,32,0.06);
+    padding: 4px 8px; border-radius: 4px; white-space: nowrap;
+  }
+ 
+  .card-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 18px; line-height: 1.2;
+    margin-bottom: 16px; letter-spacing: -0.01em;
+    color: var(--white);
+  }
+ 
+  .employer-list { list-style: none; display: flex; flex-direction: column; }
+ 
+  .employer-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 0; border-bottom: 1px solid rgba(44,38,32,0.08);
+    font-size: 13px; font-weight: 300;
+    color: rgba(44,38,32,0.7);
+    transition: color 0.15s; cursor: default;
+    font-family: 'Source Serif 4', serif;
+  }
+ 
+  .employer-item:last-child { border-bottom: none; }
+  .employer-item:hover { color: var(--white); }
+ 
+  .employer-item .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent-color, var(--red));
+    flex-shrink: 0; opacity: 0.7;
+  }
+ 
+  .employer-item.hidden { display: none; }
+ 
+  .show-more-btn {
+    background: none;
+    border: 1px dashed rgba(44,38,32,0.2);
+    color: var(--gray); font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 8px 0;
+    width: 100%; margin-top: 10px;
+    cursor: pointer; border-radius: 4px; transition: all 0.2s;
+  }
+ 
+  .show-more-btn:hover { border-color: var(--gold); color: var(--gold); }
+ 
+  .industry-list-view { display: flex; flex-direction: column; }
+ 
+  .list-section { border-bottom: 1px solid var(--border); animation: fadeUp 0.4s ease both; }
+ 
+  .list-section-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 0; cursor: pointer; transition: color 0.2s;
+  }
+ 
+  .list-section-header:hover { color: var(--gold); }
+  .list-section-icon { font-size: 18px; }
+ 
+  .list-section-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 20px; flex: 1; color: var(--white);
+  }
+ 
+  .list-section-meta { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gray); }
+  .list-chevron { color: var(--gray); transition: transform 0.3s; font-size: 14px; }
+  .list-section.open .list-chevron { transform: rotate(180deg); }
+ 
+  .list-employers {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px; background: var(--border); margin-bottom: 20px;
+  }
+ 
+  .list-section.open .list-employers { display: grid; }
+ 
+  .list-employer-item {
+    background: var(--card-bg); padding: 12px 16px;
+    font-size: 13px; font-weight: 300; color: rgba(44,38,32,0.7);
+    display: flex; align-items: center; gap: 8px;
+    transition: background 0.15s, color 0.15s;
+    font-family: 'Source Serif 4', serif;
+  }
+ 
+  .list-employer-item:hover { background: rgba(0,0,0,0.04); color: var(--white); }
+ 
+  .list-employer-item .dot {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent-color, var(--red)); flex-shrink: 0;
+  }
+ 
+  .no-results { text-align: center; padding: 80px 20px; color: var(--gray); display: none; }
+  .no-results.visible { display: block; }
+  .no-results h3 { font-family: 'Source Serif 4', serif; font-size: 28px; margin-bottom: 12px; color: var(--black); }
+ 
+  .industry-card.hidden, .list-section.hidden { display: none; }
+ 
+  @media (max-width: 640px) {
+    header, .controls, .filters, main { padding-left: 20px; padding-right: 20px; }
+    .industry-grid { grid-template-columns: 1fr; }
+    .controls { gap: 10px; }
+    .count-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+ 
+<header>
+  <div class="header-eyebrow">Fall 2026 · College Park, MD</div>
+  <h1>UMD Career Fair<br><em>Employers</em></h1>
+  <div class="header-sub">Explore opportunities by industry sector</div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num" id="total-count">—</div><div class="stat-label">Employers</div></div>
+    <div class="stat"><div class="stat-num">9</div><div class="stat-label">Industries</div></div>
+    <div class="stat"><div class="stat-num">Fall 2026</div><div class="stat-label">Season</div></div>
+  </div>
+</header>
+ 
+<div class="controls" id="controls">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="search" id="search" placeholder="Search employers or industries…" autocomplete="off">
+  </div>
+  <div class="view-toggle">
+    <button class="view-btn active" id="grid-btn" onclick="setView('grid')" title="Grid view">⊞</button>
+    <button class="view-btn" id="list-btn" onclick="setView('list')" title="List view">≡</button>
+  </div>
+  <div class="count-badge">Showing <span id="visible-count">—</span> employers</div>
+</div>
+ 
+<div class="filters" id="filters"></div>
+ 
+<main>
+  <div id="grid-view" class="industry-grid"></div>
+  <div id="list-view" class="industry-list-view" style="display:none"></div>
+  <div class="no-results" id="no-results">
+    <h3>No matches found</h3>
+    <p>Try a different search term or clear your filter.</p>
+  </div>
+</main>
+ 
+<script>
+const INDUSTRIES = [
+  { id:"aerospace", name:"Aerospace, Defense & Government Contracting", icon:"🛰️", accent:"#4A9EFF",
+    employers:["AMERICAN SYSTEMS","Annapolis Micro Systems","Applied Research Associates, Inc. (ARA)","AST SpaceMobile","Augur Consulting","Bering Straits Native Corporation","GAP Solutions, Inc.","General Dynamics, Electric Boat","Harford County Government","Herrick Technology Laboratories, Inc.","HII-Mission Technologies Division","Johns Hopkins University Applied Physics Laboratory","Kratos Defense & Security Solutions","L3Harris Technologies"] },
+  { id:"construction", name:"Construction, Civil Engineering & Infrastructure", icon:"🏗️", accent:"#FF8C42",
+    employers:["Aegis Project Controls","Allan Myers","American Contracting & Environmental Services","Applied Control Engineering, Inc.","ArchKey Solutions","ARCO Design/Build","Arora Engineers","ATCS, PLC","Atlantic Contracting & Material Co., Inc.","Atlantic Design Group, Inc.","Baker Construction","Chaney Enterprises","City of Salisbury, Maryland","Clark Construction Group","Conewago Enterprises, Inc.","Cooper Building Services","D.W. KOZERA, INC.","Delon Hampton & Associates","Dynamic Engineering Consultants, PC","Environmental Quality Resources, LLC","Flippo Construction Company Inc.","Garney Construction","GCS-SIGAL","Geo-Technology Associates, Inc.","Gilbane Building Company","Harmon Inc.","HDR, Inc.","Hensel Phelps","HNTB Corporation","Hoar Construction","iDesign Engineering, Inc.","J.F. Shea Construction, Inc.","Kiewit","Manganaro Building Group, LLC.","Manhattan Construction Company"] },
+  { id:"tech", name:"Technology, Software, Electronics & IT", icon:"💻", accent:"#00D4AA",
+    employers:["Alertus Technologies","Amphenol Communications Solutions","CRISP Shared Services","Digital Infuzion, LLC","DIRECTV","EIT2.0","Epic","IBM Consulting","ICF","Ignyte Group","Impact Automation, Inc.","Intralox, LLC","M.C. Dean"] },
+  { id:"healthcare", name:"Healthcare, Life Sciences & Biotechnology", icon:"🧬", accent:"#E21833",
+    employers:["A-BIO Life Sciences","Ally Behavior Centers","Arise Behavioral Health","Arundel Lodge, Inc.","Baltimore Aircoil Company","Brighter Strides ABA","CareFirst BlueCross BlueShield","Cornerstone Montgomery Inc.","EveryMind","Helping Hands Family","Howard County Health Department","Infinite Legacy","Kennedy Krieger Institute","Linwood Center, Inc."] },
+  { id:"education", name:"Education, Camps & Youth Services", icon:"🎓", accent:"#C9A000",
+    employers:["Calleva","Camps Airy & Louise","Charles County Public Schools (MD)","Club SciKidz MD","Echo Hill Outdoor School","iD Tech","Ivymount School"] },
+  { id:"government", name:"Government, Public Safety & Public Service", icon:"🏛️", accent:"#9B6DFF",
+    employers:["AARP","Anne Arundel County Police Department","Architect of the Capitol","Baltimore County Government — 911 Center","Charles County Government — Human Resources","Chesapeake Bay Trust","Congressional Black Caucus Foundation","D.C. Metropolitan Police Department","Defense Logistics Agency — DLA Energy","Farm Credit Administration","Federal Bureau of Investigation — FBI","Frederick Police Department","Fund for the Public Interest"] },
+  { id:"business", name:"Business, Consulting, Finance & Staffing", icon:"📊", accent:"#FF6B9D",
+    employers:["Accion","ALDI USA — Frederick","Beacon Hill","Compass Group USA","Cornerstone Advisor Group LLC","Enterprise Mobility","Expeditors International of WA, Inc. — BWI","Financial Growth Partners","Florida Financial Advisors — Tristate Financial Advisors","Insight Global","LaBarge Financial","M&T Bank"] },
+  { id:"manufacturing", name:"Manufacturing, Energy & Industrial", icon:"⚙️", accent:"#FF9F1C",
+    employers:["Advanced Cooling Technologies, Inc.","Advanced Technology & Research Corporation","Barry-Wehmiller Companies","Carter Machinery Company, Inc.","Cintas Corporation","Convergint","Dreyer's Grand Ice Cream","dsm-firmenich","Havtech — Spectrum Energy","HSS Enterprises — IKO Industries","Inspiration Mobility","Johnson Controls","Kingspan North America","LaMotte Company","Loccioni"] }
+];
+ 
+const PREVIEW_COUNT = 6;
+let currentView = 'grid', currentFilter = 'all', searchQuery = '';
+ 
+const total = INDUSTRIES.reduce((s,i) => s + i.employers.length, 0);
+document.getElementById('total-count').textContent = total;
+document.getElementById('visible-count').textContent = total;
+ 
+// Pills — built entirely by JS, HTML has empty #filters div
+const filtersEl = document.getElementById('filters');
+[{label:'All Industries', id:'all'}, ...INDUSTRIES.map(i => ({label: i.icon+' '+i.name.split(',')[0].split('&')[0].trim(), id:i.id}))].forEach(({label,id}) => {
+  const btn = document.createElement('button');
+  btn.className = 'pill' + (id==='all' ? ' active' : '');
+  btn.textContent = label;
+  btn.dataset.id = id;
+  btn.addEventListener('click', () => setFilter(id));
+  filtersEl.appendChild(btn);
+});
+ 
+// Grid cards — built entirely by JS, HTML has empty #grid-view div
+const gridEl = document.getElementById('grid-view');
+INDUSTRIES.forEach((ind, i) => {
+  const card = document.createElement('div');
+  card.className = 'industry-card';
+  card.dataset.id = ind.id;
+  card.style.setProperty('--accent-color', ind.accent);
+  card.style.animationDelay = (i*60)+'ms';
+  const preview = ind.employers.slice(0, PREVIEW_COUNT);
+  const rest = ind.employers.slice(PREVIEW_COUNT);
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="card-icon">${ind.icon}</div>
+      <div class="card-count">${ind.employers.length} employers</div>
+    </div>
+    <div class="card-title">${ind.name}</div>
+    <ul class="employer-list">
+      ${preview.map(e=>`<li class="employer-item"><span class="dot"></span>${e}</li>`).join('')}
+      ${rest.map(e=>`<li class="employer-item extra hidden"><span class="dot"></span>${e}</li>`).join('')}
+    </ul>
+    ${rest.length > 0 ? `<button class="show-more-btn" onclick="toggleMore(this)">+ Show ${rest.length} more</button>` : ''}`;
+  gridEl.appendChild(card);
+});
+ 
+// List sections — built entirely by JS, HTML has empty #list-view div
+const listEl = document.getElementById('list-view');
+INDUSTRIES.forEach((ind, i) => {
+  const sec = document.createElement('div');
+  sec.className = 'list-section';
+  sec.dataset.id = ind.id;
+  sec.style.setProperty('--accent-color', ind.accent);
+  sec.style.animationDelay = (i*60)+'ms';
+  sec.innerHTML = `
+    <div class="list-section-header" onclick="toggleSection(this)">
+      <span class="list-section-icon">${ind.icon}</span>
+      <span class="list-section-title">${ind.name}</span>
+      <span class="list-section-meta">${ind.employers.length} employers</span>
+      <span class="list-chevron">▾</span>
+    </div>
+    <div class="list-employers">
+      ${ind.employers.map(e=>`<div class="list-employer-item"><span class="dot"></span>${e}</div>`).join('')}
+    </div>`;
+  listEl.appendChild(sec);
+});
+ 
+function toggleMore(btn) {
+  const extras = btn.closest('.industry-card').querySelectorAll('.employer-item.extra');
+  const wasHidden = extras[0].classList.contains('hidden');
+  extras.forEach(e => e.classList.toggle('hidden', !wasHidden));
+  btn.textContent = wasHidden ? `− Hide ${extras.length}` : `+ Show ${extras.length} more`;
+}
+ 
+function toggleSection(header) { header.closest('.list-section').classList.toggle('open'); }
+ 
+function setView(v) {
+  currentView = v;
+  gridEl.style.display = v==='grid' ? 'grid' : 'none';
+  listEl.style.display  = v==='list' ? 'flex'  : 'none';
+  document.getElementById('grid-btn').classList.toggle('active', v==='grid');
+  document.getElementById('list-btn').classList.toggle('active', v==='list');
+}
+ 
+function setFilter(id) {
+  currentFilter = id;
+  document.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.id===id));
+  applyFilters();
+}
+ 
+document.getElementById('search').addEventListener('input', e => {
+  searchQuery = e.target.value.toLowerCase().trim();
+  applyFilters();
+});
+ 
+function applyFilters() {
+  let count = 0;
+  INDUSTRIES.forEach(ind => {
+    const gc = gridEl.querySelector(`[data-id="${ind.id}"]`);
+    const ls = listEl.querySelector(`[data-id="${ind.id}"]`);
+    const industryMatch = currentFilter==='all' || currentFilter===ind.id;
+    const nameMatch = !searchQuery || ind.name.toLowerCase().includes(searchQuery);
+ 
+    gc.querySelectorAll('.employer-item').forEach(item => {
+      if (!searchQuery) { if (!item.classList.contains('extra')) item.classList.remove('hidden'); }
+      else item.classList.toggle('hidden', !nameMatch && !item.textContent.trim().toLowerCase().includes(searchQuery));
+    });
+ 
+    ls.querySelectorAll('.list-employer-item').forEach(item => {
+      item.style.display = (searchQuery && !nameMatch && !item.textContent.trim().toLowerCase().includes(searchQuery)) ? 'none' : '';
+    });
+ 
+    const hasVisible = gc.querySelectorAll('.employer-item:not(.hidden)').length > 0;
+    const show = industryMatch && (!searchQuery || nameMatch || hasVisible);
+    gc.classList.toggle('hidden', !show);
+    ls.classList.toggle('hidden', !show);
+    if (show) count += ind.employers.filter(e => !searchQuery || nameMatch || e.toLowerCase().includes(searchQuery)).length;
+  });
+ 
+  document.getElementById('visible-count').textContent = count;
+  document.getElementById('no-results').classList.toggle('visible', !document.querySelector('.industry-card:not(.hidden)'));
+}
+ 
+window.addEventListener('scroll', () => {
+  document.getElementById('controls').classList.toggle('scrolled', window.scrollY > 10);
+});
+</script>
+</body>
+</html>
